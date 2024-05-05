@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basestation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: basestation
+  template:
+    metadata:
+      labels:
+        app: basestation
+    spec:
+      containers:
+        - name: basestation
+          image: m13salama/basestation:latest
+          volumeMounts:
+            - name: app-storage
+              mountPath: /app
+          env:
+            - name: path
+              value: "/app/"
+            - name: ParquetPath
+              value: "/app/Parquet_Files_Directory"
+            - name: invalidPath
+              value: "/app/Parquet_Files_Data"
+            - name: bitCaskIP
+              value: "bitcask-service"
+            - name: KAFKA_BROKER
+              value: my-kafka:9092
+          command: ["java", "-jar", "/app/target/Base-Central-Station-1.0.jar"]
+      volumes:
+        - name: app-storage
+          persistentVolumeClaim:
+            claimName: my-pvc-parquet
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: basestation-service
+spec:
+  type: ClusterIP
+  selector:
+    app: basestation
+  ports:
+    - protocol: TCP
+      port: 3636
+      targetPort: 3636

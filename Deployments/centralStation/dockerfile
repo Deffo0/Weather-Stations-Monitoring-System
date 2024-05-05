@@ -1,0 +1,29 @@
+FROM openjdk:19-jdk-alpine
+
+# Install Maven
+RUN apk update && \
+    apk add --no-cache maven
+
+# Install the required dependencies
+RUN apk update && apk add libstdc++
+
+ENV KAFKA_BROKER=localhost:9092
+ENV path=/app/data/
+ENV ParquetPath=/app/data/Parquet_Files_Directory
+ENV invalidPath=/app/data/Parquet_Files_Data
+ENV bitCaskIP=bitcask-service
+
+# Set working directory
+WORKDIR /app
+
+# Copy the Maven project files to the Docker image
+COPY pom.xml .
+
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+# Build the Maven project
+RUN mvn package
+
+# CMD ["java", "-jar", "/app/target/Base-Central-Station-1.0.jar"]

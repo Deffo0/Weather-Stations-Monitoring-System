@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitcask
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bitcask
+  template:
+    metadata:
+      labels:
+        app: bitcask
+    spec:
+      containers:
+        - name: bitcask
+          image: m13salama/bicask:latest
+          volumeMounts:
+            - name: app-storage
+              mountPath: /app/data
+          env:
+            - name: path
+              value: "/app/data/"
+          command: ["java", "-jar", "/app/target/Bit-Cask-1.0.jar", "$(path)"]
+      volumes:
+        - name: app-storage
+          persistentVolumeClaim:
+            claimName: my-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bitcask-service
+spec:
+  type: ClusterIP
+  selector:
+    app: bitcask
+  ports:
+    - protocol: TCP
+      port: 4240
+      targetPort: 4240

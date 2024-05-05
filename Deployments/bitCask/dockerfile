@@ -1,0 +1,18 @@
+FROM openjdk:19-jdk-alpine
+
+# Install Maven
+RUN apk update && \
+    apk add --no-cache maven
+
+# Set working directory
+WORKDIR /app
+
+# Copy the Maven project files to the Docker image
+COPY pom.xml .
+
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+# Build the Maven project
+RUN mvn package
