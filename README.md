@@ -1,4 +1,2 @@
-# Welcome to your organization's demo respository
-This code repository (or "repo") is designed to demonstrate the best GitHub has to offer with the least amount of noise.
-
-The repo includes an `index.html` file (so it can render a web page), two GitHub Actions workflows, and a CSS stylesheet dependency.
+# Weather Stations Monitoring System
+![image](https://github.com/Deffo0/Weather-Stations-Monitoring-System/assets/73228199/7f2e9d38-14c3-4285-9504-238a66a8f9fa)
